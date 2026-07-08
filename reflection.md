@@ -7,6 +7,14 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+Before drawing the UML, I started by identifying the three core actions a user needs to be able to perform in PawPal+:
+
+1. **Add a pet** — the owner enters basic info about their pet (name, species/breed, etc.) so the app knows who the plan is for.
+2. **Add/schedule a task** — the owner adds care tasks like walks, feeding, meds, or grooming, each with a duration and a priority, so the scheduler has something to work with.
+3. **See today's plan** — the owner can view the generated daily schedule, in order, so they know what to do and when.
+
+I used these three actions as the starting point for my UML design, since every class and method I sketched needed to support at least one of them.
+
 **b. Design changes**
 
 - Did your design change during implementation?
