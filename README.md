@@ -75,7 +75,7 @@ The suite (`tests/test_pawpal.py`) covers:
 - **Recurring tasks** — completing a "daily" task automatically spawns a new occurrence due one day later (and leaves it pending); completing a "once" task does not spawn anything.
 - **Sorting** — `Scheduler.sort_by_time()` returns tasks in chronological order, with tasks that have no preferred time sorted last.
 - **Conflict detection** — two tasks at the exact same time are flagged as a conflict; two back-to-back tasks (one ending exactly when the next starts) are correctly *not* flagged.
-- **Edge case** — generating a plan for a pet with zero tasks doesn't crash and produces an empty plan.
+- **Edge case** — generating a plan for a pet with zero tasks doesn't crash and makes an empty plan.
 
 Sample test output:
 
