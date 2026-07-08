@@ -79,14 +79,12 @@ Sample test output:
 
 ## 📐 Smarter Scheduling
 
-> Fill in once you've implemented scheduling logic.
-
 | Feature | Method(s) | Notes |
 |---------|-----------|-------|
-| Task sorting | | e.g., by priority, duration |
-| Filtering | | e.g., skip tasks if time runs out |
-| Conflict handling | | e.g., overlapping time slots |
-| Recurring tasks | | e.g., daily vs. weekly |
+| Task sorting | `Scheduler.sort_by_time()` | Sorts tasks chronologically by `preferred_time` ("HH:MM" strings sort correctly as plain strings since they're zero-padded); tasks with no preferred time sort last. `Scheduler.generate_plan()` separately sorts by priority (then time) when building the day's plan. |
+| Filtering | `Owner.get_tasks_by_status(completed)`, `Owner.get_tasks_by_pet(pet_name)` | Lets the UI/terminal show just completed vs. pending tasks, or just one pet's tasks, without touching the underlying `Pet`/`Task` data. |
+| Conflict handling | `Task.conflicts_with()`, `Scheduler.find_conflicts()` | `conflicts_with()` checks whether two tasks' time windows overlap. `find_conflicts()` runs that check pairwise across all of an owner's pending tasks (`itertools.combinations`) and returns readable warning strings instead of raising. `generate_plan()` also calls `conflicts_with()` to skip a task that would collide with one already scheduled. |
+| Recurring tasks | `Task.next_occurrence()`, `Pet.mark_task_complete()` | When a "daily"/"weekly" task is completed via `mark_task_complete()`, `next_occurrence()` builds a new `Task` due one day/week later (`due_date + timedelta(...)`), and `mark_task_complete()` automatically adds it back onto the pet. |
 
 ## 📸 Demo Walkthrough
 

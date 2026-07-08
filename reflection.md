@@ -43,6 +43,12 @@ I kept `Owner` and `Pet` as simple data holders (using Python dataclasses) since
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+One tradeoff: `Task.conflicts_with()` only flags a conflict when **both** tasks have an explicit `preferred_time` set. A task with no preferred time (a "flexible" task, like "Litter box cleaning") is never checked for conflicts against anything else, even though the scheduler still gives it a concrete start time when it packs it into the day.
+
+I made this tradeoff because most pet care tasks (feeding, walks, meds) aren't tied to an exact minute in real life — treating every task as if it had a fixed time would force the owner to make up precise times for tasks they don't actually care about scheduling precisely, just so conflict detection would "see" them. In practice this is safe: flexible tasks are placed sequentially by the scheduler's cursor (right after whatever was scheduled before them), so they can never actually overlap another task's time window — they only ever fill gaps. The cost is that this reasoning lives implicitly in how `generate_plan` assigns start times; if that packing logic ever changed to place flexible tasks non-sequentially, `conflicts_with` would need to be revisited since it wouldn't catch overlaps between two flexible tasks or a flexible task placed inside a fixed task's window.
+
+I also kept conflict detection as a simple O(n²) pairwise scan (`itertools.combinations` over all pending tasks) rather than a more efficient sweep-line/interval approach. For a single day's task list (realistically a handful to a few dozen items), the O(n²) scan is fast enough that the added complexity of an optimal algorithm wouldn't be worth it — simplicity and readability won out over asymptotic performance here.
+
 ---
 
 ## 3. AI Collaboration
