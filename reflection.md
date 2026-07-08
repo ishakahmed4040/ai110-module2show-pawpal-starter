@@ -58,10 +58,22 @@ I also kept conflict detection as a simple O(n²) pairwise scan (`itertools.comb
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+I used my AI coding assistant for essentially every phase: brainstorming the initial objects and their responsibilities, drafting the Mermaid UML, writing the class skeletons, implementing the scheduling/sorting/conflict/recurrence logic, writing tests, and wiring the Streamlit UI to the backend.
+
+The feature that mattered most wasn't any single "smart suggestion" — it was that the assistant could directly read and edit my actual files (`pawpal_system.py`, `app.py`, `main.py`, tests) and then immediately *run* them (`pytest`, `python main.py`, even booting the Streamlit app) to prove a change worked, instead of me copy-pasting snippets and hoping. For example, after wiring the UI in Phase 6, it ran the app through Streamlit's `AppTest` harness to simulate clicking "Add pet" and "Generate schedule" and confirm no exceptions — that's a very different (and more trustworthy) kind of "help" than just generating plausible-looking code.
+
+The most useful prompts were narrow and concrete, not open-ended — e.g., "how should the Scheduler retrieve tasks from the Owner's pets?" got a specific, actionable answer (`Owner.get_all_tasks()`), whereas vague prompts like "make it smarter" would have produced generic suggestions I'd have had to filter through anyway.
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
+
+During Phase 4's "Evaluate and Refine" step, I asked how `find_conflicts()` could be simplified. The AI offered two different directions: (1) replace the manual nested-loop pair-scan with `itertools.combinations(tasks, 2)`, and (2) replace the whole O(n²) approach with a sweep-line/interval algorithm for O(n log n) performance. I accepted the first (it's genuinely more readable, not just "clever") and rejected the second — a daily task list is realistically a handful to a few dozen items, so the sweep-line's better asymptotic performance wasn't worth the extra code complexity it would add. I verified both the accepted and rejected paths by actually re-running `main.py` and the test suite after the refactor to confirm identical output before keeping it, rather than trusting that the "more Pythonic" version was correct just because it looked cleaner.
+
+I used separate chat sessions the way the project called for — one thread for algorithmic planning/brainstorming (Phase 4) and a fresh one for test planning (Phase 5) — and that mattered more than I expected. Keeping each session scoped to one concern meant the assistant's suggestions stayed relevant to that specific goal (e.g., the testing-focused session gave me edge cases like "same exact time" and "back-to-back tasks" instead of drifting back into implementation details), and it also gave me a clean, focused log to look back at later if I needed to remember *why* a particular test or algorithm decision was made.
+
+The biggest thing I learned about being the "lead architect" is that the AI is excellent at execution once a decision is made — implementing a method, writing a test, catching an inconsistency (like a missing `task_id` on `Task`) — but it doesn't know my priorities unless I set them. Every actual tradeoff in this project (keeping `Owner`/`Pet` as simple dataclasses, treating tasks without a fixed time as "flexible," rejecting the sweep-line optimization) came from me deciding what mattered for *this* scenario's scale and goals, not from the AI volunteering the "right" answer unprompted. Using AI well here meant staying the one who owned the design decisions and used the assistant to move fast on everything downstream of them.
 
 ---
 
