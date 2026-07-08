@@ -15,6 +15,15 @@ Before drawing the UML, I started by identifying the three core actions a user n
 
 I used these three actions as the starting point for my UML design, since every class and method I sketched needed to support at least one of them.
 
+From there, I landed on four classes:
+
+- **Owner** — holds the pet owner's name, preferences, and the list of pets they own. Responsible for adding a pet and retrieving the list of pets.
+- **Pet** — holds the pet's name, species, and its list of tasks. Responsible for adding, editing, removing, and retrieving that pet's tasks.
+- **Task** — holds the details of a single care task: name, duration, priority, recurrence, and whether it's completed. Responsible for marking itself complete and checking whether it conflicts (time-wise) with another task.
+- **Scheduler** — holds the available time for the day and is responsible for taking a pet's tasks and generating a feasible, prioritized daily plan, plus explaining why it chose that plan.
+
+I kept `Owner` and `Pet` as simple data holders (using Python dataclasses) since their job is mostly to store information and manage their own lists. I split scheduling logic out into a separate `Scheduler` class rather than putting it on `Pet`, since scheduling felt like a distinct responsibility (it needs to reason about time/priority across tasks) rather than something a data class should own.
+
 **b. Design changes**
 
 - Did your design change during implementation?
